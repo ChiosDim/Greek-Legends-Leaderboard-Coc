@@ -20,7 +20,7 @@ today = f"{dt.strftime('%B')} {dt.day}, {dt.year}"
 # ==================
 
 headers = {
-    "Authorization": f"Bearer {COC_API_TOKEN}"
+    "Authorization": f"Bearer {CLASH_API_TOKEN}"
 }
 
 # --- Load yesterday's data ---
@@ -105,3 +105,4 @@ print("Discord status:", response.status_code)
 print("Discord response:", response.text)
 
 print("Total players processed:", len(players))
+
