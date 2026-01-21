@@ -4,8 +4,11 @@ import os
 from datetime import datetime, timezone
 
 # ===== CONFIG =====
-COC_API_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImExNDk0MDY2LTNlNzYtNGIzMi05ZDEwLWMzMTljYWYyZDUzMyIsImlhdCI6MTc2ODk4MDQyOSwic3ViIjoiZGV2ZWxvcGVyLzFkZjk0ZmExLTUyMWEtOWU4NC1kY2ZkLThjMzU3OThhMThjMSIsInNjb3BlcyI6WyJjbGFzaCJdLCJsaW1pdHMiOlt7InRpZXIiOiJkZXZlbG9wZXIvc2lsdmVyIiwidHlwZSI6InRocm90dGxpbmcifSx7ImNpZHJzIjpbIjkxLjE0MC4yNC4yOCJdLCJ0eXBlIjoiY2xpZW50In1dfQ.D7VHc2ZdD1liQEva28uyFL309_Pk1W1RZsxDKCEBJ846jBjH9P4VGf6q4G6orvv3MnpO5-ndqfbeh18mZ1DOcw"
-DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1463424384675872811/t22hbwaPyZZGXCUcMCgMOsNa9WCBXfQhUdnzpS8v74Nj0nyzOBg2lq5Qmzozq-_48S8S"
+CLASH_API_TOKEN = os.environ.get("CLASH_API_TOKEN")
+DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
+
+if not CLASH_API_TOKEN or not DISCORD_WEBHOOK_URL:
+    raise RuntimeError("Missing environment variables")
 
 LOCATION_ID = "32000097"  # Greece
 LEGEND_TROPHIES = 4700
@@ -100,4 +103,5 @@ response = requests.post(DISCORD_WEBHOOK_URL, json=payload)
 
 print("Discord status:", response.status_code)
 print("Discord response:", response.text)
+
 print("Total players processed:", len(players))
