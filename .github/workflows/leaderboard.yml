@@ -1,0 +1,35 @@
+name: Greece Legends Leaderboard
+
+on:
+  schedule:
+    # 06:59 Greece time
+    # GitHub uses UTC:
+    # Winter (UTC+2) -> 04:59 UTC
+    # Summer (UTC+3) -> 03:59 UTC
+    #
+    # This runs at BOTH times safely
+    - cron: "59 3 * * *"
+    - cron: "59 4 * * *"
+  workflow_dispatch:
+
+jobs:
+  post-leaderboard:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4
+
+      - name: Run leaderboard bot
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: python greek_legends.py
