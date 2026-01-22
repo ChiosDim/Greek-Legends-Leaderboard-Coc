@@ -68,11 +68,12 @@ for row in rows:
     if tag in previous:
         diff = trophies - previous[tag]
         if diff > 0:
-            change = f" ▲{diff}"
+            change = f" 🟢 ▲{diff}"
         elif diff < 0:
-            change = f" ▼{abs(diff)}"
+            change = f" 🔴 ▼{abs(diff)}"
         else:
-            change = " ▬"
+            change = " ⚪ ▬"
+
 
     players.append(f"{rank}. {name} | {trophies}{change}")
     today_data[tag] = trophies
@@ -100,3 +101,4 @@ payload = {"embeds": [embed]}
 resp = requests.post(DISCORD_WEBHOOK, json=payload)
 print("Discord status:", resp.status_code)
 print(resp.text)
+
