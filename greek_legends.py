@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 import os
 import json
 
@@ -20,7 +21,7 @@ HEADERS = {
 # ==========================
 
 # ---- Time (Greece) ----
-greece_tz = timezone(timedelta(hours=3))
+greece_tz = ZoneInfo("Europe/Athens")
 now_gr = datetime.now(greece_tz)
 date_title = now_gr.strftime("%B %d")
 time_footer = now_gr.strftime("%H:%M")
@@ -29,7 +30,7 @@ today_str = now_gr.strftime("%Y-%m-%d")
 current_time_str = now_gr.strftime("%H:%M")
 
 # ---- Time guard: ONLY run at 06:59 Greece time ----
-if current_time_str not in ("06:59", "7:00"):
+if current_time_str != "6:59":
     print(f"Not 06:59 Greece time (now: {current_time_str}). Exiting.")
     exit(0)
 
@@ -127,6 +128,7 @@ print(resp.text)
 if resp.status_code == 204 or resp.status_code == 200:
     with open(LOCK_FILE, "w") as f:
         f.write(today_str)
+
 
 
 
