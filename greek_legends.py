@@ -29,7 +29,7 @@ today_str = now_gr.strftime("%Y-%m-%d")
 current_time_str = now_gr.strftime("%H:%M")
 
 # ---- Time guard: ONLY run at 06:59 Greece time ----
-if current_time_str != "06:59":
+if current_time_str not in ("06:59", "7:00"):
     print(f"Not 06:59 Greece time (now: {current_time_str}). Exiting.")
     exit(0)
 
@@ -127,6 +127,7 @@ print(resp.text)
 if resp.status_code == 204 or resp.status_code == 200:
     with open(LOCK_FILE, "w") as f:
         f.write(today_str)
+
 
 
 
