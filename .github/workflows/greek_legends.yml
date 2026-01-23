@@ -30,7 +30,7 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add previous_day.json
+          git add previous_day.json last_run_date.txt
           git commit -m "Update previous day leaderboard" || echo "No changes"
           git push
 
