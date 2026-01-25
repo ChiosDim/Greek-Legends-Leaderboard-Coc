@@ -5,7 +5,8 @@ from zoneinfo import ZoneInfo
 import os
 import json
 
-print("Workflow started at UTC:", datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"))
+print("=== SCRIPT START ===")
+print("UTC now:", datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"))
 # ---- Daily run lock ----
 LOCK_FILE = "last_run_date.txt"
 
@@ -31,7 +32,7 @@ today_str = now_gr.strftime("%Y-%m-%d")
 current_time_str = now_gr.strftime("%H:%M")
 
 # ---- Time guard: ONLY run at 06:59 Greece time ----
-if not ("06:50" <= current_time_str <= "07:05"):
+if not ("06:30" <= current_time_str <= "07:05"):
     print(f"Outside allowed window (now: {current_time_str}). Exiting.")
     exit(0)
 
@@ -129,6 +130,7 @@ print(resp.text)
 if resp.status_code == 204 or resp.status_code == 200:
     with open(LOCK_FILE, "w") as f:
         f.write(today_str)
+
 
 
 
