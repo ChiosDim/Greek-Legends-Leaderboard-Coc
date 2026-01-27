@@ -10,7 +10,10 @@ print("=== SCRIPT START ===")
 # ========= CONFIG =========
 URL = "https://coc-stats.net/en/locations/32000097/players/"
 DISCORD_WEBHOOK = os.environ["DISCORD_WEBHOOK"]
+
 DATA_FILE = "previous_day.json"
+LOCK_FILE = "last_run_date.txt"
+
 MAX_PLAYERS = 100
 
 HEADERS = {
@@ -18,13 +21,33 @@ HEADERS = {
 }
 # ==========================
 
+
 # ---- Greece time ----
 greece_tz = ZoneInfo("Europe/Athens")
 now_gr = datetime.now(greece_tz)
-date_title = now_gr.strftime("%B %d")
-time_footer = now_gr.strftime("%H:%M")
 
-print("Greece time:", now_gr)
+today_str = now_gr.strftime("%Y-%m-%d")
+current_time_str = now_gr.strftime("%H:%M")
+
+date_title = now_gr.strftime("%B %d")
+time_footer = current_time_str
+
+print("Greece time:", now_gr.strftime("%Y-%m-%d %H:%M:%S"))
+
+
+# ---- TIME GUARD (runs every 5 min, posts only in window) ----
+if not ("06:40" <= current_time_str <= "07:05"):
+    print("Outside posting window. Exiting.")
+    exit(0)
+
+
+# ---- ONCE PER DAY GUARD ----
+if os.path.exists(LOCK_FILE):
+    with open(LOCK_FILE, "r") as f:
+        if f.read().strip() == today_str:
+            print("Already posted today. Exiting.")
+            exit(0)
+
 
 # ---- Load yesterday data ----
 previous = {}
@@ -32,16 +55,18 @@ if os.path.exists(DATA_FILE):
     with open(DATA_FILE, "r", encoding="utf-8") as f:
         previous = json.load(f)
 
+
 # ---- Fetch page ----
 response = requests.get(URL, headers=HEADERS, timeout=30)
 response.raise_for_status()
-soup = BeautifulSoup(response.text, "html.parser")
 
+soup = BeautifulSoup(response.text, "html.parser")
 rows = soup.select("table tr")
 
 players = []
 today_data = {}
 seen_tags = set()
+
 
 for row in rows:
     cols = row.find_all("td")
@@ -79,9 +104,11 @@ for row in rows:
     if len(players) >= MAX_PLAYERS:
         break
 
-# ---- Save today ----
+
+# ---- Save today data ----
 with open(DATA_FILE, "w", encoding="utf-8") as f:
     json.dump(today_data, f, ensure_ascii=False, indent=2)
+
 
 # ---- Discord embed ----
 embed = {
@@ -95,6 +122,17 @@ embed = {
 
 payload = {"embeds": [embed]}
 
+
+# ---- Send to Discord ----
 resp = requests.post(DISCORD_WEBHOOK, json=payload)
 print("Discord status:", resp.status_code)
 print(resp.text)
+
+
+# ---- SAVE LOCK ONLY IF SUCCESS ----
+if resp.status_code in (200, 204):
+    with open(LOCK_FILE, "w") as f:
+        f.write(today_str)
+    print("Lock file written. Done.")
+else:
+    print("Discord failed. Lock NOT written.")
