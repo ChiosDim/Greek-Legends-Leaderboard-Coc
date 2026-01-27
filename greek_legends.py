@@ -6,6 +6,7 @@ import os
 import json
 
 print("=== SCRIPT START ===")
+HEALTHCHECK_URL = os.environ.get("HEALTHCHECK_URL")
 
 # ========= CONFIG =========
 URL = "https://coc-stats.net/en/locations/32000097/players/"
@@ -128,6 +129,13 @@ resp = requests.post(DISCORD_WEBHOOK, json=payload)
 print("Discord status:", resp.status_code)
 print(resp.text)
 
+# ---- Healthcheck ping ----
+if HEALTHCHECK_URL:
+    try:
+        requests.get(HEALTHCHECK_URL, timeout=10)
+        print("Healthcheck ping sent")
+    except Exception as e:
+        print("Healthcheck failed:", e)
 
 # ---- SAVE LOCK ONLY IF SUCCESS ----
 if resp.status_code in (200, 204):
@@ -136,3 +144,4 @@ if resp.status_code in (200, 204):
     print("Lock file written. Done.")
 else:
     print("Discord failed. Lock NOT written.")
+
