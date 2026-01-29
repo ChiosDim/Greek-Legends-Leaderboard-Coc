@@ -36,7 +36,7 @@ print("Greece time:", now_gr.strftime("%Y-%m-%d %H:%M:%S"))
 
 
 # ---- TIME WINDOW GUARD ----
-if not ("06:40" <= current_time_str <= "07:05"):
+if not ("06:00" <= current_time_str <= "07:05"):
     print("Outside posting window. Exiting.")
     exit(0)
 
@@ -146,3 +146,4 @@ if HEALTHCHECK_URL:
         print("Healthcheck failed:", e)
 
 print("=== SCRIPT END ===")
+
