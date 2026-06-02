@@ -14,7 +14,6 @@ DISCORD_WEBHOOK = os.environ["DISCORD_WEBHOOK"]
 HEALTHCHECK_URL = os.environ.get("HEALTHCHECK_URL")
 
 DATA_FILE = "previous_day.json"
-DAILY_LOCK = "posted_today.txt"
 
 MAX_PLAYERS = 100
 
@@ -47,17 +46,9 @@ print("Greece time:", now_gr.strftime("%Y-%m-%d %H:%M:%S"))
 # 04:00 UTC -> 07:00 Greece
 # 05:00 UTC -> 08:00 Greece
 # ======================================================
-if not ("07:00" <= current_time_str <= "08:00"):
+if not ("07:00" <= current_time_str < "08:00"):
     print("Outside pre-reset window. Exiting.")
     exit(0)
-
-
-# ---- DAILY LOCK GUARD ----
-if os.path.exists(DAILY_LOCK):
-    with open(DAILY_LOCK) as f:
-        if f.read().strip() == today_str:
-            print("Already posted today. Exiting.")
-            exit(0)
 
 
 # ---- Load yesterday data ----
@@ -178,7 +169,10 @@ if not players:
     print("No players found. Exiting safely.")
     exit(0)
 
-
+if len(players) < 5:
+    print("Too few players found. Something is wrong.")
+    exit(0)
+    
 # ---- Discord embed ----
 embed = {
     "title": f"Greece Legends Leaderboard for {date_title}",
