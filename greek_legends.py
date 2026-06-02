@@ -6,7 +6,7 @@ import os
 import json
 import time
 
-TEST_MODE = True
+TEST_MODE = False
 print("=== SCRIPT START ===")
 
 # ========= CONFIG =========
