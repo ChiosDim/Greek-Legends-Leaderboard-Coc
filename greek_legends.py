@@ -6,6 +6,7 @@ import os
 import json
 import time
 
+TEST_MODE = True
 print("=== SCRIPT START ===")
 
 # ========= CONFIG =========
@@ -49,9 +50,10 @@ print("Greece time:", now_gr.strftime("%Y-%m-%d %H:%M:%S"))
 # Therefore we allow:
 # 07:00 - 08:00 Greece time
 # ======================================================
-if not ("07:00" <= current_time_str < "08:00"):
-    print("Outside pre-reset window. Exiting.")
-    exit(0)
+if not TEST_MODE:
+    if not ("07:00" <= current_time_str < "08:00"):
+        print("Outside pre-reset window. Exiting.")
+        exit(0)
 
 # ---- Load yesterday data ----
 previous = {}
