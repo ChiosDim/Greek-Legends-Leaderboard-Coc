@@ -2,11 +2,7 @@ name: Greece Legends Leaderboard v2
 
 on:
   schedule:
-  - cron: "0 4 * * *"
-  - cron: "15 4 * * *"
-  - cron: "30 4 * * *"
-  - cron: "45 4 * * *"
-   
+  - cron: "*/15 * * * *"
   workflow_dispatch:
 
 jobs:
